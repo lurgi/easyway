@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Card,
   CardContent,
@@ -7,45 +8,110 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
+import { Button } from "./ui/button";
+import { useState } from "react";
+import SearchModal from "./Searchmodal";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  departures: z.string().min(2).max(50),
+  arrivals: z.string().min(2).max(50),
 });
 
 const SideBar = () => {
+  const [searchModal, setSearchModal] = useState(false);
+  const onSearchModal = () => {
+    setSearchModal((isSearchModal) => !isSearchModal);
+    console.log(searchModal);
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const onSubmit = async (value: z.infer<typeof formSchema>) => {
+    try {
+      console.log(value);
+      // const address = await axios.post("/api/search_address", {});
+      // console.log(address);
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
   return (
-    <div className="hidden md:flex w-3/12 flex-col h-full">
+    <div className="hidden md:flex w-[400px] flex-col h-full">
       <div className="h-[80%] p-4">
         <div className="mb-4">
           <Card>
-            <CardHeader>
-              <CardTitle>출발지</CardTitle>
-              <CardDescription>Departures</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-          </Card>
-        </div>
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>도착지</CardTitle>
-              <CardDescription>Arrivals</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-1"
+              >
+                <CardHeader>
+                  <CardTitle>출발지</CardTitle>
+                  <CardDescription>Departures</CardDescription>
+                </CardHeader>
+                <CardContent onClick={onSearchModal}>
+                  <FormField
+                    control={form.control}
+                    name="departures"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            readOnly
+                            className="focus-visible:ring-0 focus-visible:border-1px focus-visible:ring-offset-0"
+                            placeholder="도로명, 주소를 입력하세요"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardHeader>
+                  <CardTitle>도착지</CardTitle>
+                  <CardDescription>Arrivals</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FormField
+                    control={form.control}
+                    name="arrivals"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="shadcn" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <div className="w-full flex justify-center pb-5">
+                  <Button className="font-semibold" type="submit">
+                    길찾기
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </Card>
         </div>
       </div>
       <footer>여기엔 설정과 옵션들</footer>
+      {searchModal ? <SearchModal></SearchModal> : null}
     </div>
   );
 };
