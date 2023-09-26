@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import useStore from "@/lib/store";
 
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -22,6 +23,11 @@ const formSchema = z.object({
 });
 
 const SearchModal = () => {
+  const { closeModal, mode, modeChange } = useStore((state) => state);
+  const clickClose = () => {
+    closeModal();
+    modeChange(undefined);
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,10 +49,11 @@ const SearchModal = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-lg flex justify-between">
-                      주소 검색{" "}
+                      {mode === "departures" ? "출발지" : "도착지"} 주소 검색{" "}
                       <Button
                         variant={"ghost"}
                         className="rounded-full aspect-square p-2"
+                        onClick={clickClose}
                       >
                         <AiOutlineClose size={15} />
                       </Button>

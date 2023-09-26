@@ -25,6 +25,7 @@ import axios from "axios";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import SearchModal from "./Searchmodal";
+import useStore from "@/lib/store";
 
 const formSchema = z.object({
   departures: z.string().min(2).max(50),
@@ -32,10 +33,10 @@ const formSchema = z.object({
 });
 
 const SideBar = () => {
-  const [searchModal, setSearchModal] = useState(false);
-  const onSearchModal = () => {
-    setSearchModal((isSearchModal) => !isSearchModal);
-    console.log(searchModal);
+  const { isModalOpen, modeChange, openModal } = useStore((state) => state);
+  const onSearchModal = (value: "departures" | "arrivals") => {
+    openModal();
+    modeChange(value);
   };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,7 +64,7 @@ const SideBar = () => {
                   <CardTitle>출발지</CardTitle>
                   <CardDescription>Departures</CardDescription>
                 </CardHeader>
-                <CardContent onClick={onSearchModal}>
+                <CardContent onClick={() => onSearchModal("departures")}>
                   <FormField
                     control={form.control}
                     name="departures"
@@ -73,7 +74,7 @@ const SideBar = () => {
                           <Input
                             readOnly
                             className="focus-visible:ring-0 focus-visible:border-1px focus-visible:ring-offset-0"
-                            placeholder="도로명, 주소를 입력하세요"
+                            placeholder="도로명 혹은 주소를 입력하세요"
                             {...field}
                           />
                         </FormControl>
@@ -86,14 +87,19 @@ const SideBar = () => {
                   <CardTitle>도착지</CardTitle>
                   <CardDescription>Arrivals</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent onClick={() => onSearchModal("arrivals")}>
                   <FormField
                     control={form.control}
                     name="arrivals"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="shadcn" {...field} />
+                          <Input
+                            readOnly
+                            className="focus-visible:ring-0 focus-visible:border-1px focus-visible:ring-offset-0"
+                            placeholder="도로명 혹은 주소를 입력하세요"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -111,7 +117,7 @@ const SideBar = () => {
         </div>
       </div>
       <footer>여기엔 설정과 옵션들</footer>
-      {searchModal ? <SearchModal></SearchModal> : null}
+      {isModalOpen ? <SearchModal></SearchModal> : null}
     </div>
   );
 };
