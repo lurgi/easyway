@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,12 +16,31 @@ import * as z from "zod";
 import useStore from "@/lib/store";
 
 import { AiOutlineClose } from "react-icons/ai";
+import axios from "axios";
+import { useState } from "react";
 
 const formSchema = z.object({
   address: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "주소를 입력해주세요.",
   }),
 });
+
+type Address = {
+  types: string[];
+  longName: string;
+  shortName: string;
+  code: string;
+};
+
+interface AddressesType {
+  addressElements: Address[];
+  distance: number;
+  englishAddress: string;
+  jibunAddress: string;
+  roadAddress: string;
+  x: string;
+  y: string;
+}
 
 const SearchModal = () => {
   const { closeModal, mode, modeChange } = useStore((state) => state);
@@ -34,13 +54,29 @@ const SearchModal = () => {
       address: "",
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const [addresses, setAddresses] = useState<AddressesType[]>([]);
+  const onSubmit = async ({ address }: z.infer<typeof formSchema>) => {
+    try {
+      const res = await axios.post("/api/search_address", {
+        address: address,
+      });
+      setAddresses(res.data);
+      console.log(addresses);
+    } catch (err: any) {
+      console.log(err);
+    }
   };
   return (
     <>
       <div className="w-screen h-screen z-50 absolute flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg border-2 w-screen md:w-[400px]">
+        <div className="bg-white p-8 rounded-lg border-2 w-screen md:w-[600px] relative">
+          <Button
+            variant={"ghost"}
+            className="rounded-full aspect-square p-2 absolute right-8 top-6"
+            onClick={clickClose}
+          >
+            <AiOutlineClose size={15} />
+          </Button>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
@@ -50,13 +86,6 @@ const SearchModal = () => {
                   <FormItem>
                     <FormLabel className="text-lg flex justify-between">
                       {mode === "departures" ? "출발지" : "도착지"} 주소 검색{" "}
-                      <Button
-                        variant={"ghost"}
-                        className="rounded-full aspect-square p-2"
-                        onClick={clickClose}
-                      >
-                        <AiOutlineClose size={15} />
-                      </Button>
                     </FormLabel>
                     <FormControl>
                       <div className="flex">
@@ -73,7 +102,15 @@ const SearchModal = () => {
                   </FormItem>
                 )}
               />
-              <div>이곳에 받은 주소 뿌리기</div>
+              <div>
+                {addresses.length === 0
+                  ? "도로명 주소 혹은 지번 주소를 정확하게 입력해주세요"
+                  : addresses.map((address, index) => (
+                      <div className="" key={index}>
+                        {address.jibunAddress}
+                      </div>
+                    ))}
+              </div>
             </form>
           </Form>
         </div>

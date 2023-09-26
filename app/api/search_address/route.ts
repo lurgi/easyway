@@ -1,7 +1,30 @@
+import axios from "axios";
 import { NextResponse } from "next/server";
 
-const POST = (req: Request) => {
-  return NextResponse.json({ ok: true });
+const apiUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+
+const headers = {
+  "X-NCP-APIGW-API-KEY-ID": process.env.NEXT_PUBLIC_NAVER_API_CLIENT_ID,
+  "X-NCP-APIGW-API-KEY": process.env.NEXT_PUBLIC_NAVER_API_CLIENT_SECRET,
 };
 
-export default POST;
+export const POST = async (req: Request) => {
+  const { address } = await req.json();
+
+  const params = {
+    query: address,
+  };
+  try {
+    const res = await axios.get(apiUrl, {
+      headers,
+      params,
+    });
+    if (res.data.status === "OK") {
+      return NextResponse.json(res.data.addresses);
+    }
+    return new NextResponse(res.data.errMessage);
+  } catch (err: any) {
+    console.log(err);
+    return new NextResponse(err);
+  }
+};
