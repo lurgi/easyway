@@ -1,3 +1,4 @@
+import placesStore from "@/lib/placesStore";
 import {
   CardContent,
   CardDescription,
@@ -7,8 +8,9 @@ import {
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 
-import useStore from "@/lib/modalStore";
 import { UseFormReturn } from "react-hook-form";
+import modalOpenStore from "@/lib/modalStore";
+import { useEffect } from "react";
 
 interface CardInputAttrs {
   form: UseFormReturn<
@@ -23,11 +25,18 @@ interface CardInputAttrs {
 }
 
 const CardInput = ({ form, isDeparture }: CardInputAttrs) => {
-  const { modeChange, openModal } = useStore((state) => state);
+  const { modeChange, openModal } = modalOpenStore((state) => state);
+  const { departures, arrivals } = placesStore((state) => state);
   const onSearchModal = (value: "departures" | "arrivals") => {
     openModal();
     modeChange(value);
   };
+  useEffect(() => {
+    if (isDeparture && departures)
+      form.setValue("departures", departures?.jibunAddress!);
+    if (!isDeparture && arrivals)
+      form.setValue("arrivals", arrivals?.jibunAddress!);
+  }, [departures, arrivals, form, isDeparture]);
   return (
     <>
       <CardHeader>
@@ -41,7 +50,7 @@ const CardInput = ({ form, isDeparture }: CardInputAttrs) => {
       >
         <FormField
           control={form.control}
-          name="departures"
+          name={isDeparture ? "departures" : "arrivals"}
           render={({ field }) => (
             <FormItem>
               <FormControl>

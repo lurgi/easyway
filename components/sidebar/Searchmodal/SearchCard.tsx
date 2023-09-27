@@ -37,7 +37,11 @@ const SearchCard = ({ isLoading, addresses }: SearchCardAttrs) => {
             </CardDescription>
           ) : (
             addresses.map((address, index) => (
-              <div className="" key={index} onClick={() => onClick(address)}>
+              <div
+                className="hover:bg-slate-50 hover:ring-2 rounded-md hover:cursor-pointer transition-all p-2"
+                key={index}
+                onClick={() => onClick(address)}
+              >
                 {address.jibunAddress}
               </div>
             ))
