@@ -7,7 +7,7 @@ import {
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 
-import useStore from "@/lib/store";
+import useStore from "@/lib/modalStore";
 import { UseFormReturn } from "react-hook-form";
 
 interface CardInputAttrs {

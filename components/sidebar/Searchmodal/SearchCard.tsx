@@ -1,13 +1,27 @@
 import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { AddressesType } from "../Searchmodal";
+import { Address, AddressDetail } from "../Searchmodal";
+
+import placesStore from "@/lib/placesStore";
+import modalOpenStore from "@/lib/modalStore";
 
 interface SearchCardAttrs {
   isLoading: boolean;
-  addresses: AddressesType[] | undefined;
+  addresses: Address[] | undefined;
 }
 
 const SearchCard = ({ isLoading, addresses }: SearchCardAttrs) => {
+  const { setDepartures, setArrivals } = placesStore((state) => state);
+  const { closeModal, mode } = modalOpenStore((state) => state);
+  const onClick = (address: Address) => {
+    if (mode === "departures") {
+      setDepartures(address);
+    }
+    if (mode === "arrivals") {
+      setArrivals(address);
+    }
+    closeModal();
+  };
   return (
     <Card className="mt-4">
       <CardContent className="py-3 px-4 h-48">
@@ -23,7 +37,7 @@ const SearchCard = ({ isLoading, addresses }: SearchCardAttrs) => {
             </CardDescription>
           ) : (
             addresses.map((address, index) => (
-              <div className="" key={index}>
+              <div className="" key={index} onClick={() => onClick(address)}>
                 {address.jibunAddress}
               </div>
             ))

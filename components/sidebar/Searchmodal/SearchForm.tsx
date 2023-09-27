@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 
 import { AddressesType } from "../Searchmodal";
 
-import useStore from "@/lib/store";
+import useStore from "@/lib/modalStore";
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
 import * as z from "zod";

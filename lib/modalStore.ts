@@ -1,14 +1,14 @@
 import { create } from "zustand";
 
-interface ModalOpenState {
+interface ModalOpenStore {
   isModalOpen: boolean;
   closeModal: () => void;
   openModal: () => void;
-  mode: string;
+  mode?: "departures" | "arrivals";
   modeChange: (value: "departures" | "arrivals" | undefined) => void;
 }
 
-const modalOpenState = create<ModalOpenState>((set) => ({
+const modalOpenStore = create<ModalOpenStore>((set) => ({
   isModalOpen: false,
   closeModal: () =>
     set(() => ({
@@ -18,11 +18,11 @@ const modalOpenState = create<ModalOpenState>((set) => ({
     set({
       isModalOpen: true,
     }),
-  mode: "",
+  mode: undefined,
   modeChange: (value) =>
     set(() => ({
       mode: value,
     })),
 }));
 
-export default modalOpenState;
+export default modalOpenStore;

@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import SearchModal from "./sidebar/Searchmodal";
 import SideBarForm from "./sidebar/SideBarForm";
 
-import useStore from "@/lib/store";
+import useStore from "@/lib/modalStore";
 
 const SideBar = () => {
   const { isModalOpen } = useStore((state) => state);

@@ -3,20 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 
-import useStore from "@/lib/store";
+import useStore from "@/lib/modalStore";
 import { useState } from "react";
 import SearchForm from "./Searchmodal/SearchForm";
 import SearchCard from "./Searchmodal/SearchCard";
 
-type Address = {
+export type AddressDetail = {
   types: string[];
   longName: string;
   shortName: string;
   code: string;
 };
 
-export interface AddressesType {
-  addressElements: Address[];
+export interface Address {
+  addressElements: AddressDetail[];
   distance: number;
   englishAddress: string;
   jibunAddress: string;
@@ -33,7 +33,7 @@ const SearchModal = () => {
     closeModal();
   };
 
-  const [addresses, setAddresses] = useState<AddressesType[] | undefined>();
+  const [addresses, setAddresses] = useState<Address[] | undefined>();
 
   return (
     <>
