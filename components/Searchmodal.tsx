@@ -9,13 +9,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import useStore from "@/lib/store";
 
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import axios from "axios";
 import { useState } from "react";
 
@@ -44,9 +53,10 @@ interface AddressesType {
 
 const SearchModal = () => {
   const { closeModal, mode, modeChange } = useStore((state) => state);
+  const [isLoading, setIsLoading] = useState(false);
   const clickClose = () => {
-    closeModal();
     modeChange(undefined);
+    closeModal();
   };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,17 +64,19 @@ const SearchModal = () => {
       address: "",
     },
   });
-  const [addresses, setAddresses] = useState<AddressesType[]>([]);
+  const [addresses, setAddresses] = useState<AddressesType[] | undefined>();
   const onSubmit = async ({ address }: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+
     try {
       const res = await axios.post("/api/search_address", {
         address: address,
       });
       setAddresses(res.data);
-      console.log(addresses);
     } catch (err: any) {
       console.log(err);
     }
+    setIsLoading(false);
   };
   return (
     <>
@@ -90,7 +102,7 @@ const SearchModal = () => {
                     <FormControl>
                       <div className="flex">
                         <Input
-                          placeholder="도로명 혹은 주소를 입력하세요."
+                          placeholder="도로명 혹은 지번 주소를 입력하세요."
                           {...field}
                         />
                         <Button className="ml-2" type="submit">
@@ -103,13 +115,32 @@ const SearchModal = () => {
                 )}
               />
               <div>
-                {addresses.length === 0
-                  ? "도로명 주소 혹은 지번 주소를 정확하게 입력해주세요"
-                  : addresses.map((address, index) => (
-                      <div className="" key={index}>
-                        {address.jibunAddress}
+                <Card>
+                  <CardContent className="py-3 px-4 h-48">
+                    {isLoading ? (
+                      <div className="flex justify-center">
+                        <AiOutlineLoading3Quarters className="animate-spin" />
                       </div>
-                    ))}
+                    ) : addresses ? (
+                      addresses.length === 0 ? (
+                        <CardDescription>
+                          <p>검색 결과가 없습니다.</p>
+                          <p>
+                            도로명 주소 혹은 지번 주소를 정확하게 입력해주세요
+                          </p>
+                        </CardDescription>
+                      ) : (
+                        addresses.map((address, index) => (
+                          <div className="" key={index}>
+                            {address.jibunAddress}
+                          </div>
+                        ))
+                      )
+                    ) : (
+                      <CardDescription>검색어를 입력해주세요</CardDescription>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </form>
           </Form>

@@ -19,12 +19,8 @@ export const POST = async (req: Request) => {
       headers,
       params,
     });
-    if (res.data.status === "OK") {
-      return NextResponse.json(res.data.addresses);
-    }
-    return new NextResponse(res.data.errMessage);
+    return NextResponse.json(res.data.addresses);
   } catch (err: any) {
-    console.log(err);
-    return new NextResponse(err);
+    return new NextResponse(err.errMessage, { status: 500 });
   }
 };

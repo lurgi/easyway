@@ -51,7 +51,7 @@ const SideBar = () => {
     }
   };
   return (
-    <div className="hidden md:flex w-[400px] flex-col h-full">
+    <div className="hidden md:flex w-[520px] flex-col h-full">
       <div className="h-[80%] p-4">
         <div className="mb-4">
           <Card>
@@ -74,7 +74,7 @@ const SideBar = () => {
                           <Input
                             readOnly
                             className="focus-visible:ring-0 focus-visible:border-1px focus-visible:ring-offset-0"
-                            placeholder="도로명 혹은 주소를 입력하세요"
+                            placeholder="도로명 혹은 지번 주소를 입력하세요."
                             {...field}
                           />
                         </FormControl>
@@ -97,7 +97,7 @@ const SideBar = () => {
                           <Input
                             readOnly
                             className="focus-visible:ring-0 focus-visible:border-1px focus-visible:ring-offset-0"
-                            placeholder="도로명 혹은 주소를 입력하세요"
+                            placeholder="도로명 혹은 지번 주소를 입력하세요."
                             {...field}
                           />
                         </FormControl>
