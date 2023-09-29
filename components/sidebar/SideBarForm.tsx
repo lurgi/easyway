@@ -6,6 +6,8 @@ import CardInput from "./CardInput";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import placesStore from "@/lib/placesStore";
 
 const formSchema = z.object({
   departures: z.string().min(2).max(50),
@@ -16,9 +18,14 @@ const SideBarForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+  const { departures, arrivals } = placesStore((state) => state);
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     try {
-      console.log(value);
+      const res = await axios.post("/api/direction", {
+        departures,
+        arrivals,
+      });
+      console.log(res.data.route);
     } catch (err: any) {
       console.log(err);
     }
