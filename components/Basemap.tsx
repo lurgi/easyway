@@ -1,14 +1,9 @@
 "use client";
 
 import curGeoStore from "@/lib/curGeoStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const url = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_API_CLIENT_ID}`;
-
-interface LocationType {
-  x?: number;
-  y?: number;
-}
 
 const BaseMap = () => {
   const { latitude, longitude, setLatitude, setLongitude } = curGeoStore(
