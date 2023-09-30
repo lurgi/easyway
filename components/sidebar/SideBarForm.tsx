@@ -31,12 +31,12 @@ const SideBarForm = () => {
         departures,
         arrivals,
       });
+
       setDirection(res.data.route.traoptimal[0].path);
-      // const [upDirections, downDirction] = ;
-      const [upDirections, downDirction] = await upDownDivid(
+      const [upDirections, downDirections] = await upDownDivid(
         res.data.route.traoptimal[0].path
       );
-      console.log(upDirections, downDirction);
+      setUpDownDirection({ upDirections, downDirections });
     } catch (err: any) {
       // ERROR HANDLING
       console.log(err);

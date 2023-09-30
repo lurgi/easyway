@@ -1,35 +1,41 @@
 import { create } from "zustand";
-import { upDownDivid } from "./utils";
 
 type Direction = number[];
-export type DirectionLine = [Direction, Direction];
+export interface DirectionLine {
+  str: Direction;
+  end: Direction;
+  inclination: number;
+}
 
 interface DirectionStore {
   isDirectionLoad: boolean;
   directions?: Direction[];
   upDirections?: DirectionLine[];
-  downDirection?: DirectionLine[];
+  downDirections?: DirectionLine[];
   setDirection: (directions: Direction[]) => void;
   setDirectionLoad: (bol: boolean) => void;
-  setUpDownDirection: (
-    upDirections: DirectionLine[],
-    downDirction: DirectionLine[]
-  ) => void;
+  setUpDownDirection: ({
+    upDirections,
+    downDirections,
+  }: {
+    upDirections: DirectionLine[];
+    downDirections: DirectionLine[];
+  }) => void;
 }
 
 const directionStore = create<DirectionStore>((set) => ({
   isDirectionLoad: false,
   directions: undefined,
   upDirections: undefined,
-  downDirection: undefined,
+  downDirections: undefined,
   setDirection: (directions) => set(() => ({ directions })),
   setDirectionLoad: (bol) => {
     set(() => ({
       isDirectionLoad: bol,
     }));
   },
-  setUpDownDirection: (upDirections, downDirction) => {
-    set(() => ({ upDirections, downDirction }));
+  setUpDownDirection: ({ upDirections, downDirections }) => {
+    set(() => ({ upDirections, downDirections }));
   },
 }));
 

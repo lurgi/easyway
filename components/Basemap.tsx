@@ -10,7 +10,8 @@ const BaseMap = () => {
   const { latitude, longitude, setLatitude, setLongitude } = curGeoStore(
     (state) => state
   );
-  const { isDirectionLoad, directions } = directionStore((state) => state);
+  const { isDirectionLoad, upDirections, downDirections, directions } =
+    directionStore((state) => state);
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -40,12 +41,36 @@ const BaseMap = () => {
           center: new naver.maps.LatLng(directions[0][1], directions[0][0]),
           zoom: 16,
         });
-        var polyline = new naver.maps.Polyline({
-          map,
-          path: directions.map(
-            (value) => new naver.maps.LatLng(value[1], value[0])
-          ),
-        });
+        // console.log(upDirections, downDirections);
+        // console.log("this is correct", directions[0][1], directions[0][0]);
+        if (upDirections) {
+          for (const { str, end, inclination } of upDirections) {
+            const [strX, strY] = str;
+            const [endX, endY] = end;
+            const poliyline = new naver.maps.Polyline({
+              map,
+              path: [
+                new naver.maps.LatLng(strY, strX),
+                new naver.maps.LatLng(endY, endX),
+              ],
+              strokeColor: "#ff0000",
+            });
+          }
+        }
+        if (downDirections) {
+          for (const { str, end, inclination } of downDirections) {
+            const [strX, strY] = str;
+            const [endX, endY] = end;
+            const poliyline = new naver.maps.Polyline({
+              map,
+              path: [
+                new naver.maps.LatLng(strY, strX),
+                new naver.maps.LatLng(endY, endX),
+              ],
+              strokeColor: "#1100ff",
+            });
+          }
+        }
       }
     };
   }, [
@@ -54,6 +79,8 @@ const BaseMap = () => {
     setLatitude,
     setLongitude,
     isDirectionLoad,
+    upDirections,
+    downDirections,
     directions,
   ]);
   return <div id="map" className="w-full h-full"></div>;
