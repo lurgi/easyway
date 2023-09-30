@@ -1,4 +1,3 @@
-import placesStore from "@/lib/placesStore";
 import axios from "axios";
 import { NextResponse } from "next/server";
 

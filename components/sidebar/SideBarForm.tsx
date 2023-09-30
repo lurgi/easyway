@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import placesStore from "@/lib/placesStore";
 import directionStore from "@/lib/directionSotre";
+import { upDownDivid } from "@/lib/utils";
 
 const formSchema = z.object({
   departures: z.string().min(2).max(50),
@@ -20,7 +21,9 @@ const SideBarForm = () => {
     resolver: zodResolver(formSchema),
   });
   const { departures, arrivals } = placesStore((state) => state);
-  const { setDirection, setDirectionLoad } = directionStore((state) => state);
+  const { setDirection, setDirectionLoad, setUpDownDirection } = directionStore(
+    (state) => state
+  );
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     setDirectionLoad(false);
     try {
@@ -29,6 +32,11 @@ const SideBarForm = () => {
         arrivals,
       });
       setDirection(res.data.route.traoptimal[0].path);
+      // const [upDirections, downDirction] = ;
+      const [upDirections, downDirction] = await upDownDivid(
+        res.data.route.traoptimal[0].path
+      );
+      console.log(upDirections, downDirction);
     } catch (err: any) {
       // ERROR HANDLING
       console.log(err);

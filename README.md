@@ -12,13 +12,23 @@
 1. Shadcn-ui
 2. React Icon
 3. Zustand
+   사이드바에서 주소검색 모달창 띄우기
+   모달창을 이용하여 주소검색
+   오른쪽 메인 컴포넌트에 지도 렌더
 
 ##### 기능구현
 
 1. Naver Dynamic Map API
 2. Naver Direction API
+3. Naver Geocode API
+4. Google Elevation API
+   현재위치 찾고 지도의 중심점으로 바꾸기
+   Geocode API를 이용한 주소 검색
+   Direction API를 이용한 길찾기
+   Elevation API를 이용한 고도계산으로 오르막 내리막을 계산한다.
 
 #### 한계
 
 1. 도보를 이용한 API가 필요하다. (지금 사용하는 길찾기 API는 자동차 기준)
-2. 도보 API가 아니여서 계단, 엘리베이터 등 알지못함. 정확한 길찾기 불가능
+2. 도보 API가 아니여서 계단, 엘리베이터 등 알지못함. 정확한 길찾기 불가능. 도보 API를 찾기 전까진 서비스가 무의미 해 보인다. (목적의식 사라짐...)
+3. Google ElevationAPI를 통한 고도 계산의 문제점. 한번의 길찾기에서 수백, 수천번의 요청이 전해진다. 사용량이 많아진 만큼 비용이 어마어마해질 것...
